@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "nailpolish_files")
-public class NailpolishFileEntity {
+public class AssetEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +15,9 @@ public class NailpolishFileEntity {
 
     @Column(name = "mega_url", length = 500)
     private String megaUrl;
+
+    @Column(name = "file_type", length = 50)
+    private String fileType;
 
     @Column(name = "uploaded_at", insertable = false, updatable = false,
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -46,6 +49,14 @@ public class NailpolishFileEntity {
 
     public void setMegaUrl(String megaUrl) {
         this.megaUrl = megaUrl;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 
     public Timestamp getUploadedAt() {

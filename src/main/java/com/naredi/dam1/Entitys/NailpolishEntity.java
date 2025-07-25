@@ -24,7 +24,7 @@ public class NailpolishEntity {
     @Column(length = 30)
     private String color;
 
-    @Column(name = "size_ml", precision = 5, scale = 2)
+    @Column(name = "size_ml")
     private Double sizeMl;
 
     @Column(length = 30)
@@ -35,7 +35,7 @@ public class NailpolishEntity {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "nailpolish", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<NailpolishFileEntity> files;
+    private List<AssetEntity> files;
 
     public int getId() {
         return id;
@@ -101,11 +101,11 @@ public class NailpolishEntity {
         this.createdAt = createdAt;
     }
 
-    public List<NailpolishFileEntity> getFiles() {
+    public List<AssetEntity> getFiles() {
         return files;
     }
 
-    public void setFiles(List<NailpolishFileEntity> files) {
+    public void setFiles(List<AssetEntity> files) {
         this.files = files;
     }
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NailpolishRepository extends JpaRepository<NailpolishEntity, Integer> {
-
+    boolean existsByName(String name);
 }

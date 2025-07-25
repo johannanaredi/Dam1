@@ -1,5 +1,9 @@
 package com.naredi.dam1.services;
 
+import com.naredi.dam1.Entitys.NailpolishEntity;
+import com.naredi.dam1.Repositorys.AssetRepository;
+import com.naredi.dam1.Repositorys.NailpolishRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -9,6 +13,12 @@ import java.util.List;
 
 @Service
 public class MegaService {
+
+    @Autowired
+    private NailpolishRepository nailpolishRepository;
+
+    @Autowired
+    private AssetRepository nailpolishFileRepository;
 
     public List<String> listMegaFiles() {
         List<String> list = new ArrayList<>();
@@ -35,4 +45,21 @@ public class MegaService {
 
         return list;
     }
+
+    public String syncMegaFilesToDatabase() {
+        List<String> megaFiles = listMegaFiles();
+
+        int createdCount = 0;
+
+        for (String filename : megaFiles) {
+            if (!nailpolishRepository.existsByName(filename)) {
+                NailpolishEntity entity = new NailpolishEntity();
+                entity.setName(filename); // sätt bara filnamnet som name
+                nailpolishRepository.save(entity);
+                createdCount++;
+            }
+        }
+        return createdCount + " new nailpolish items synced from Mega.";
+    }
+
 }
