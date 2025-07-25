@@ -24,6 +24,43 @@ public class NailpolishFileEntity {
     @JoinColumn(name = "nailpolish_id", nullable = false)
     private NailpolishEntity nailpolish;
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getMegaUrl() {
+        return megaUrl;
+    }
+
+    public void setMegaUrl(String megaUrl) {
+        this.megaUrl = megaUrl;
+    }
+
+    public Timestamp getUploadedAt() {
+        return uploadedAt;
+    }
+
+    public void setUploadedAt(Timestamp uploadedAt) {
+        this.uploadedAt = uploadedAt;
+    }
+
+    public NailpolishEntity getNailpolish() {
+        return nailpolish;
+    }
+
+    public void setNailpolish(NailpolishEntity nailpolish) {
+        this.nailpolish = nailpolish;
+    }
 }
