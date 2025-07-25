@@ -15,9 +15,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated()  // Allt kräver inloggning
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())  // Aktiverar Basic Auth
+                .httpBasic(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable());        // Stänger av CSRF (bra vid test med Postman)
 
         return http.build();
