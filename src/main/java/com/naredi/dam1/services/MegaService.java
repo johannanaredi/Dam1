@@ -1,5 +1,6 @@
 package com.naredi.dam1.services;
 
+import com.naredi.dam1.Entitys.AssetEntity;
 import com.naredi.dam1.Entitys.NailpolishEntity;
 import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
@@ -18,7 +19,7 @@ public class MegaService {
     private NailpolishRepository nailpolishRepository;
 
     @Autowired
-    private AssetRepository nailpolishFileRepository;
+    private AssetRepository assetRepository;
 
     public List<String> listMegaFiles() {
         List<String> list = new ArrayList<>();
@@ -48,14 +49,20 @@ public class MegaService {
 
     public String syncMegaFilesToDatabase() {
         List<String> megaFiles = listMegaFiles();
-
         int createdCount = 0;
 
         for (String filename : megaFiles) {
             if (!nailpolishRepository.existsByName(filename)) {
-                NailpolishEntity entity = new NailpolishEntity();
-                entity.setName(filename); // sätt bara filnamnet som name
-                nailpolishRepository.save(entity);
+                NailpolishEntity nailpolish = new NailpolishEntity();
+                nailpolish.setName(filename); // sätt bara filnamnet som name
+                nailpolishRepository.save(nailpolish);
+
+                AssetEntity asset = new AssetEntity();
+                asset.setFilename(filename);
+                asset.setNailpolish(nailpolish);
+
+                assetRepository.save(asset);
+
                 createdCount++;
             }
         }
