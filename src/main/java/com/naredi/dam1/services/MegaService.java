@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +21,46 @@ public class MegaService {
 
     @Autowired
     private AssetRepository assetRepository;
+/*
+    public String getMegaFileUrl(String filename) {
+        try {
+            ProcessBuilder pb = new ProcessBuilder(
+                    "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\megaclient.exe",
+                    "export",
+                    "-a",
+                    "/" + filename
 
+            );
+
+            Process process = pb.start();
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String megaUrl = null;
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("https://")) {
+                    megaUrl = line;
+                    break;
+                }
+            }
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                System.err.println("megaclient export failed with exit code: " + exitCode);
+                return null;
+            }
+
+            return megaUrl;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+*/
     public List<String> listMegaFiles() {
         List<String> list = new ArrayList<>();
         try {
-            ProcessBuilder pb = new ProcessBuilder("C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\megaclient.exe", "ls");
+            ProcessBuilder pb = new ProcessBuilder("C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe", "ls");
             Process process = pb.start();
 
             BufferedReader br = new BufferedReader(
@@ -46,7 +82,7 @@ public class MegaService {
 
         return list;
     }
-
+/*
     public String syncMegaFilesToDatabase() {
         List<String> megaFiles = listMegaFiles();
         int createdCount = 0;
@@ -54,19 +90,50 @@ public class MegaService {
         for (String filename : megaFiles) {
             if (!nailpolishRepository.existsByName(filename)) {
                 NailpolishEntity nailpolish = new NailpolishEntity();
-                nailpolish.setName(filename); // sätt bara filnamnet som name
+                nailpolish.setName(filename);
                 nailpolishRepository.save(nailpolish);
 
                 AssetEntity asset = new AssetEntity();
                 asset.setFilename(filename);
                 asset.setNailpolish(nailpolish);
 
+                String megaUrl = getMegaFileUrl(filename);
+                asset.setMegaUrl(megaUrl);
                 assetRepository.save(asset);
 
                 createdCount++;
             }
         }
         return createdCount + " new nailpolish items synced from Mega.";
+    }
+*/
+
+    public String exportMegaFile(String filename) {
+        try {
+            ProcessBuilder pb = new ProcessBuilder(
+                    "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe",
+                    "export",
+                    "/" + filename
+            );
+            Process process = pb.start();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.contains("https://mega.nz/")) {
+                    return line.substring(line.indexOf("https://")).trim();
+                }
+            }
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                System.err.println("exportMegaFile failed with exit code: " + exitCode);
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

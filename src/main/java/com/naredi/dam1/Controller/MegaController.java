@@ -29,9 +29,22 @@ public class MegaController {
         return megaService.listMegaFiles();
     }
 
+    @GetMapping("/export")
+    public ResponseEntity<String> exportFile(@RequestParam("file") String filename) {
+        String link = megaService.exportMegaFile(filename);
+        if (link != null) {
+            return ResponseEntity.ok(link);
+        } else {
+            return ResponseEntity.status(500).body("Kunde inte exportera filen eller ingen länk hittades.");
+        }
+    }
+
+/*
     @PostMapping("/sync-all-files")
     public ResponseEntity<String> syncMegaFiles() {
         String result = megaService.syncMegaFilesToDatabase();
         return ResponseEntity.ok(result);
     }
+
+ */
 }
