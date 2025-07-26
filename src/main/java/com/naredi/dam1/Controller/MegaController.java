@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/mega")
@@ -24,11 +25,11 @@ public class MegaController {
         this.nailpolishRepository = nailpolishRepository;
         this.nailpolishFileRepository = nailpolishFileRepository;
     }
-    @GetMapping("/files")
-    public List<String> getMegaFiles() {
-        return megaService.listMegaFiles();
-    }
 
+
+
+
+//funkar att hämta en länk
     @GetMapping("/export")
     public ResponseEntity<String> exportFile(@RequestParam("file") String filename) {
         String link = megaService.exportMegaFile(filename);
@@ -37,6 +38,17 @@ public class MegaController {
         } else {
             return ResponseEntity.status(500).body("Kunde inte exportera filen eller ingen länk hittades.");
         }
+    }
+
+    //funkar att hämta och exportera alla länkar
+    @GetMapping("/export-all")
+    public List<Map<String, String>> exportAllAndReturnLinks() {
+        return megaService.exportAllFilesAndGetLinks();
+    }
+
+    @GetMapping("/files")
+    public List<String> getMegaFiles() {
+        return megaService.listMegaFiles();
     }
 
 /*

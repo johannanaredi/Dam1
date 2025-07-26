@@ -11,7 +11,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MegaService {
@@ -21,42 +23,7 @@ public class MegaService {
 
     @Autowired
     private AssetRepository assetRepository;
-/*
-    public String getMegaFileUrl(String filename) {
-        try {
-            ProcessBuilder pb = new ProcessBuilder(
-                    "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\megaclient.exe",
-                    "export",
-                    "-a",
-                    "/" + filename
 
-            );
-
-            Process process = pb.start();
-            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            String megaUrl = null;
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("https://")) {
-                    megaUrl = line;
-                    break;
-                }
-            }
-
-            int exitCode = process.waitFor();
-            if (exitCode != 0) {
-                System.err.println("megaclient export failed with exit code: " + exitCode);
-                return null;
-            }
-
-            return megaUrl;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-*/
     public List<String> listMegaFiles() {
         List<String> list = new ArrayList<>();
         try {
@@ -82,32 +49,8 @@ public class MegaService {
 
         return list;
     }
-/*
-    public String syncMegaFilesToDatabase() {
-        List<String> megaFiles = listMegaFiles();
-        int createdCount = 0;
 
-        for (String filename : megaFiles) {
-            if (!nailpolishRepository.existsByName(filename)) {
-                NailpolishEntity nailpolish = new NailpolishEntity();
-                nailpolish.setName(filename);
-                nailpolishRepository.save(nailpolish);
-
-                AssetEntity asset = new AssetEntity();
-                asset.setFilename(filename);
-                asset.setNailpolish(nailpolish);
-
-                String megaUrl = getMegaFileUrl(filename);
-                asset.setMegaUrl(megaUrl);
-                assetRepository.save(asset);
-
-                createdCount++;
-            }
-        }
-        return createdCount + " new nailpolish items synced from Mega.";
-    }
-*/
-
+//denna funkar för en länk
     public String exportMegaFile(String filename) {
         try {
             ProcessBuilder pb = new ProcessBuilder(
@@ -134,6 +77,58 @@ public class MegaService {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public List<Map<String, String>> exportAllFilesAndGetLinks() {
+        List<Map<String, String>> exportedFiles = new ArrayList<>();
+
+        try {
+            // 1. Lista alla filer i root
+            ProcessBuilder lsBuilder = new ProcessBuilder(
+                    "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe", "ls"
+            );
+            Process lsProcess = lsBuilder.start();
+            BufferedReader lsReader = new BufferedReader(new InputStreamReader(lsProcess.getInputStream()));
+
+            List<String> filenames = new ArrayList<>();
+            String line;
+            while ((line = lsReader.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    String cleaned = line.trim();
+                    String[] parts = cleaned.split("\\s+");
+                    String filename = parts[parts.length - 1];
+                    filenames.add(filename);
+                }
+            }
+
+            lsProcess.waitFor();
+
+            for (String filename : filenames) {
+                ProcessBuilder exportBuilder = new ProcessBuilder(
+                        "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe",
+                        "export", "/" + filename
+                );
+                Process exportProcess = exportBuilder.start();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(exportProcess.getInputStream()));
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("https://mega.nz/")) {
+                        Map<String, String> fileMap = new HashMap<>();
+                        fileMap.put("filename", filename);
+                        fileMap.put("url", line.substring(line.indexOf("https://")).trim());
+                        exportedFiles.add(fileMap);
+                        break;
+                    }
+                }
+                exportProcess.waitFor();
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return exportedFiles;
     }
 
 }
