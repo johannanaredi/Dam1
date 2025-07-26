@@ -25,19 +25,7 @@ public class MegaController {
         this.nailpolishRepository = nailpolishRepository;
         this.nailpolishFileRepository = nailpolishFileRepository;
     }
-/*
-//funkar att hämta en länk
-    @GetMapping("/export")
-    public ResponseEntity<String> exportFile(@RequestParam("file") String filename) {
-        String link = megaService.exportMegaFile(filename);
-        if (link != null) {
-            return ResponseEntity.ok(link);
-        } else {
-            return ResponseEntity.status(500).body("Kunde inte exportera filen eller ingen länk hittades.");
-        }
-    }
 
- */
 
     //funkar att hämta och exportera alla länkar
     @GetMapping("/export-all")
@@ -55,6 +43,5 @@ public class MegaController {
         megaService.exportMissingLinks();
         return "Klara!";
     }
-
 
 }

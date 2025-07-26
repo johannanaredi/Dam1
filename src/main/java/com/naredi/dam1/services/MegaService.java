@@ -49,36 +49,6 @@ public class MegaService {
 
         return list;
     }
-/*
-//denna funkar för en länk
-    public String exportMegaFile(String filename) {
-        try {
-            ProcessBuilder pb = new ProcessBuilder(
-                    "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe",
-                    "export",
-                    "/" + filename
-            );
-            Process process = pb.start();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.contains("https://mega.nz/")) {
-                    return line.substring(line.indexOf("https://")).trim();
-                }
-            }
-
-            int exitCode = process.waitFor();
-            if (exitCode != 0) {
-                System.err.println("exportMegaFile failed with exit code: " + exitCode);
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-*/
 
     public List<Map<String, String>> exportAllFilesAndGetLinks() {
         List<Map<String, String>> exportedFiles = new ArrayList<>();
@@ -151,7 +121,7 @@ public class MegaService {
             }
             lsProcess.waitFor();
 
-            // 2. Gå igenom varje fil och exportera om länk saknas
+            // 2. Gå igenom varje fil
             for (String filename : filenames) {
                 System.out.println("Kontrollerar länk för: " + filename);
 
