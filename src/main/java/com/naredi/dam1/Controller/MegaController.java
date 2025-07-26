@@ -26,9 +26,6 @@ public class MegaController {
         this.nailpolishFileRepository = nailpolishFileRepository;
     }
 
-
-
-
 //funkar att hämta en länk
     @GetMapping("/export")
     public ResponseEntity<String> exportFile(@RequestParam("file") String filename) {
@@ -51,12 +48,5 @@ public class MegaController {
         return megaService.listMegaFiles();
     }
 
-/*
-    @PostMapping("/sync-all-files")
-    public ResponseEntity<String> syncMegaFiles() {
-        String result = megaService.syncMegaFilesToDatabase();
-        return ResponseEntity.ok(result);
-    }
 
- */
 }

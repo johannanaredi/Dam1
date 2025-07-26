@@ -1,5 +1,6 @@
 package com.naredi.dam1.Entitys;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
@@ -35,6 +36,7 @@ public class NailpolishEntity {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "nailpolish", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<AssetEntity> files;
 
     public int getId() {
