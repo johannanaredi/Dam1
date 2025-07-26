@@ -49,7 +49,7 @@ public class MegaService {
 
         return list;
     }
-
+/*
 //denna funkar för en länk
     public String exportMegaFile(String filename) {
         try {
@@ -78,7 +78,7 @@ public class MegaService {
         }
         return null;
     }
-
+*/
 
     public List<Map<String, String>> exportAllFilesAndGetLinks() {
         List<Map<String, String>> exportedFiles = new ArrayList<>();
@@ -129,6 +129,65 @@ public class MegaService {
         }
 
         return exportedFiles;
+    }
+
+    public void exportMissingLinks() {
+        try {
+            // 1. Lista alla filer i MEGA
+            ProcessBuilder lsBuilder = new ProcessBuilder(
+                    "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe", "ls"
+            );
+            Process lsProcess = lsBuilder.start();
+            BufferedReader lsReader = new BufferedReader(new InputStreamReader(lsProcess.getInputStream()));
+
+            String line;
+            List<String> filenames = new ArrayList<>();
+            while ((line = lsReader.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    String[] parts = line.trim().split("\\s+");
+                    String filename = parts[parts.length - 1];
+                    filenames.add(filename);
+                }
+            }
+            lsProcess.waitFor();
+
+            // 2. Gå igenom varje fil och exportera om länk saknas
+            for (String filename : filenames) {
+                System.out.println("Kontrollerar länk för: " + filename);
+
+                // Försök få länk utan att skapa ny
+                ProcessBuilder exportCheck = new ProcessBuilder(
+                        "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe",
+                        "export", "/" + filename
+                );
+                Process checkProcess = exportCheck.start();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(checkProcess.getInputStream()));
+
+                boolean linkExists = false;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("https://mega.nz/")) {
+                        linkExists = true;
+                        break;
+                    }
+                }
+                checkProcess.waitFor();
+
+                if (!linkExists) {
+                    System.out.println(" Ingen länk hittad, exporterar: " + filename);
+                    ProcessBuilder exportAdd = new ProcessBuilder(
+                            "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe",
+                            "export", "-a", "/" + filename
+                    );
+                    Process exportProcess = exportAdd.start();
+                    exportProcess.waitFor();
+                } else {
+                    System.out.println(" Länk finns redan för: " + filename);
+                }
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }
