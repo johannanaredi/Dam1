@@ -36,7 +36,7 @@ public class NailpolishEntity {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "nailpolish", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore //ta bort och fixa DTO senare
+   // @JsonIgnore //ta bort och fixa DTO senare
     private List<AssetEntity> files;
 
     public int getId() {

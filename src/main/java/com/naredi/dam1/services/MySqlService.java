@@ -24,6 +24,8 @@ public class MySqlService {
     private MegaService megaService;
 
     public String syncAllFilesWithUrlsToDatabase() {
+
+        System.out.println("Startar synkronisering från MEGA till databasen.");
         List<Map<String, String>> allFilesWithUrls = megaService.exportAllFilesAndGetLinks();
         int createdCount = 0;
 
@@ -31,7 +33,11 @@ public class MySqlService {
             String filename = file.get("filename");
             String url = file.get("url");
 
+            System.out.println("Kontrollerar fil: " + filename);
+
             if (!nailpolishRepository.existsByName(filename)) {
+                System.out.println("Filen finns inte i databasen. Skapar ny post: " + filename);
+
                 NailpolishEntity nailpolish = new NailpolishEntity();
                 nailpolish.setName(filename);
                 nailpolishRepository.save(nailpolish);
@@ -42,18 +48,20 @@ public class MySqlService {
                 asset.setNailpolish(nailpolish);
                 assetRepository.save(asset);
 
+                System.out.println("Ny post skapad för: " + filename);
                 createdCount++;
             }
+            else {
+                System.out.println("Filen finns redan i databasen: " + filename);
+            }
         }
-
-        return createdCount + " new nailpolish items synced from Mega.";
+        return createdCount + " nytt nagellack är synkat från mega.";
     }
 
     @PostConstruct
-    public void init() {
-        System.out.println("Kör synk vid start...");
+    public void syncMySqlDataStartup() {
+        System.out.println("Synkar MySQL data med mega vid uppstart av applikationen...");
         syncAllFilesWithUrlsToDatabase();
     }
-
 }
 

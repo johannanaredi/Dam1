@@ -1,7 +1,5 @@
 package com.naredi.dam1.services;
 
-import com.naredi.dam1.Entitys.AssetEntity;
-import com.naredi.dam1.Entitys.NailpolishEntity;
 import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +25,8 @@ public class MegaService {
     public List<String> listMegaFiles() {
         List<String> list = new ArrayList<>();
         try {
+            System.out.println("Kör: ls i mega cmd");
+
             ProcessBuilder pb = new ProcessBuilder("C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe", "ls");
             Process process = pb.start();
 
@@ -36,17 +36,20 @@ public class MegaService {
 
             String line;
             while ((line = br.readLine()) != null) {
+                System.out.println("Hittade filen");
                 list.add(line);
             }
 
             int exitCode = process.waitFor();
+            System.out.println("Exitkod från ls: " + exitCode);
+
             if (exitCode != 0) {
                 list.add("Error: mega-ls failed");
+                System.out.println("ls i mega funkade inte");
             }
         } catch (Exception e) {
             list.add("Exception: " + e.getMessage());
         }
-
         return list;
     }
 
@@ -54,7 +57,7 @@ public class MegaService {
         List<Map<String, String>> exportedFiles = new ArrayList<>();
 
         try {
-            // 1. Lista alla filer i root
+            System.out.println("Kör li i mega för att hämta filnamn...");
             ProcessBuilder lsBuilder = new ProcessBuilder(
                     "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe", "ls"
             );
@@ -69,16 +72,20 @@ public class MegaService {
                     String[] parts = cleaned.split("\\s+");
                     String filename = parts[parts.length - 1];
                     filenames.add(filename);
+                    System.out.println("Fil hittad: " + filename);
                 }
             }
 
             lsProcess.waitFor();
+            System.out.println("Antal filer: " + filenames.size());
 
             for (String filename : filenames) {
+                System.out.println("Försöker exportera: " + filename);
                 ProcessBuilder exportBuilder = new ProcessBuilder(
                         "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe",
                         "export", "/" + filename
                 );
+
                 Process exportProcess = exportBuilder.start();
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(exportProcess.getInputStream()));
@@ -88,6 +95,7 @@ public class MegaService {
                         fileMap.put("filename", filename);
                         fileMap.put("url", line.substring(line.indexOf("https://")).trim());
                         exportedFiles.add(fileMap);
+                        System.out.println("Länk hittad för " + filename);
                         break;
                     }
                 }
@@ -96,6 +104,7 @@ public class MegaService {
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+            System.out.println("Fel vid exportering: " + e.getMessage());
         }
 
         return exportedFiles;
@@ -103,7 +112,7 @@ public class MegaService {
 
     public void exportMissingLinks() {
         try {
-            // 1. Lista alla filer i MEGA
+            System.out.println("Kör: mega ls för att kontrollera alla filer...");
             ProcessBuilder lsBuilder = new ProcessBuilder(
                     "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe", "ls"
             );
@@ -117,15 +126,14 @@ public class MegaService {
                     String[] parts = line.trim().split("\\s+");
                     String filename = parts[parts.length - 1];
                     filenames.add(filename);
+                    System.out.println("Fil hittad: " + filename);
                 }
             }
             lsProcess.waitFor();
+            System.out.println("Totalt antal filer att kontrollera: " + filenames.size());
 
-            // 2. Gå igenom varje fil
             for (String filename : filenames) {
-                System.out.println("Kontrollerar länk för: " + filename);
-
-                // Försök få länk utan att skapa ny
+                System.out.println("Kontrollerar om url-länk finns för: " + filename);
                 ProcessBuilder exportCheck = new ProcessBuilder(
                         "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe",
                         "export", "/" + filename
@@ -135,6 +143,7 @@ public class MegaService {
 
                 boolean linkExists = false;
                 while ((line = reader.readLine()) != null) {
+                    System.out.println("Kontrollerar utdata ");
                     if (line.contains("https://mega.nz/")) {
                         linkExists = true;
                         break;
@@ -150,8 +159,9 @@ public class MegaService {
                     );
                     Process exportProcess = exportAdd.start();
                     exportProcess.waitFor();
+                    System.out.println("Länk skapad för: " + filename);
                 } else {
-                    System.out.println(" Länk finns redan för: " + filename);
+                    System.out.println("Länk finns redan för: " + filename);
                 }
             }
 

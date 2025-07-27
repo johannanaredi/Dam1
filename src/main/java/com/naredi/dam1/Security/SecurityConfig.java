@@ -1,3 +1,5 @@
+
+/*
 package com.naredi.dam1.Security;
 
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,3 +25,5 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
+ */

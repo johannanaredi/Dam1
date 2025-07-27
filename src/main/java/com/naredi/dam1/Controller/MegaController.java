@@ -1,6 +1,4 @@
 package com.naredi.dam1.Controller;
-
-
 import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
 import com.naredi.dam1.services.MegaService;
@@ -26,9 +24,8 @@ public class MegaController {
         this.nailpolishFileRepository = nailpolishFileRepository;
     }
 
-
     //funkar att hämta och exportera alla länkar
-    @GetMapping("/export-all")
+    @GetMapping("/export/all")
     public List<Map<String, String>> exportAllAndReturnLinks() {
         return megaService.exportAllFilesAndGetLinks();
     }
@@ -43,5 +40,4 @@ public class MegaController {
         megaService.exportMissingLinks();
         return "Klara!";
     }
-
 }
