@@ -25,7 +25,6 @@ public class MegaController {
         this.nailpolishFileRepository = nailpolishFileRepository;
     }
 
-
     @GetMapping("/files")
     public List<String> getMegaFiles() {
         return megaService.listMegaFiles();
@@ -40,7 +39,7 @@ public class MegaController {
     @GetMapping("/export/missing")
     public ResponseEntity<String> exportMissing() {
         megaService.exportMissingLinks();
-        return ResponseEntity.ok("De nya länkarna är exporterade");
+        return ResponseEntity.ok("De nya länkarna är exporterade!");
     }
 
 
