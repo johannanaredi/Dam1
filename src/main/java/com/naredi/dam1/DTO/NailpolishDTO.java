@@ -1,42 +1,20 @@
-package com.naredi.dam1.Entitys;
+package com.naredi.dam1.DTO;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+
+
 import java.sql.Timestamp;
 import java.util.List;
 
-@Entity
-@Table(name = "nailpolish")
-public class NailpolishEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class NailpolishDTO {
     private int id;
-
-    @Column(nullable = false, length = 150)
     private String name;
-
-    @Column(length = 50)
     private String brand;
-
-    @Column(length = 30)
     private String finish;
-
-    @Column(length = 30)
     private String color;
-
-    @Column(name = "size_ml")
     private Double sizeMl;
-
-    @Column(length = 30)
     private String coverage;
-
-    @Column(name = "created_at", insertable = false, updatable = false,
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
-
-    @OneToMany(mappedBy = "nailpolish", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AssetEntity> files;
+    private List<AssetDto> files;
 
     public int getId() {
         return id;
@@ -102,11 +80,12 @@ public class NailpolishEntity {
         this.createdAt = createdAt;
     }
 
-    public List<AssetEntity> getFiles() {
+    public List<AssetDto> getFiles() {
         return files;
     }
 
-    public void setFiles(List<AssetEntity> files) {
+    public void setFiles(List<AssetDto> files) {
         this.files = files;
     }
 }
+

@@ -1,9 +1,9 @@
 package com.naredi.dam1.Controller;
+import com.naredi.dam1.DTO.AssetDto;
 import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
 import com.naredi.dam1.services.MegaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class MegaController {
 
     //funkar att hämta och exportera alla länkar
     @GetMapping("/export/all")
-    public List<Map<String, String>> exportAllAndReturnLinks() {
+    public List<AssetDto> exportAllAndReturnLinks() {
         return megaService.exportAllFilesAndGetLinks();
     }
 

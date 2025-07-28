@@ -2,7 +2,6 @@ package com.naredi.dam1.Controller;
 
 import com.naredi.dam1.Entitys.AssetEntity;
 import com.naredi.dam1.Repositorys.AssetRepository;
-import com.naredi.dam1.services.MySqlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

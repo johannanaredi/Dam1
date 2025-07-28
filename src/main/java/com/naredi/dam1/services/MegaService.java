@@ -1,5 +1,8 @@
 package com.naredi.dam1.services;
 
+import com.naredi.dam1.DTO.AssetDto;
+import com.naredi.dam1.DTO.DTOMapper;
+import com.naredi.dam1.Entitys.AssetEntity;
 import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +12,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class MegaService {
@@ -53,8 +55,8 @@ public class MegaService {
         return list;
     }
 
-    public List<Map<String, String>> exportAllFilesAndGetLinks() {
-        List<Map<String, String>> exportedFiles = new ArrayList<>();
+    public List<AssetDto> exportAllFilesAndGetLinks() {
+        List<AssetDto> exportedFiles = new ArrayList<>();
 
         try {
             System.out.println("Kör li i mega för att hämta filnamn...");
@@ -91,10 +93,19 @@ public class MegaService {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(exportProcess.getInputStream()));
                 while ((line = reader.readLine()) != null) {
                     if (line.contains("https://mega.nz/")) {
-                        Map<String, String> fileMap = new HashMap<>();
-                        fileMap.put("filename", filename);
-                        fileMap.put("url", line.substring(line.indexOf("https://")).trim());
-                        exportedFiles.add(fileMap);
+                        String megaUrl = line.substring(line.indexOf("https://")).trim();
+
+                        Optional<AssetEntity> optionalEntity = assetRepository.findByFilename(filename);
+                        if (optionalEntity.isPresent()) {
+                            AssetDto dto = DTOMapper.assetToDto(optionalEntity.get());
+                            exportedFiles.add(dto);
+                        } else {
+                            AssetDto dto = new AssetDto();
+                            dto.setFilename(filename);
+                            dto.setMegaUrl(megaUrl);
+                            exportedFiles.add(dto);
+                        }
+
                         System.out.println("Länk hittad för " + filename);
                         break;
                     }

@@ -1,5 +1,6 @@
 package com.naredi.dam1.services;
 
+import com.naredi.dam1.DTO.AssetDto;
 import com.naredi.dam1.Entitys.AssetEntity;
 import com.naredi.dam1.Entitys.NailpolishEntity;
 import com.naredi.dam1.Repositorys.AssetRepository;
@@ -26,12 +27,12 @@ public class MySqlService {
     public String syncAllFilesWithUrlsToDatabase() {
 
         System.out.println("Startar synkronisering från MEGA till databasen.");
-        List<Map<String, String>> allFilesWithUrls = megaService.exportAllFilesAndGetLinks();
+        List<AssetDto> allFilesWithUrls = megaService.exportAllFilesAndGetLinks();
         int createdCount = 0;
 
-        for (Map<String, String> file : allFilesWithUrls) {
-            String filename = file.get("filename");
-            String url = file.get("url");
+        for (AssetDto file : allFilesWithUrls) {
+            String filename = file.getFilename();
+            String url = file.getMegaUrl();
 
             System.out.println("Kontrollerar fil: " + filename);
 
