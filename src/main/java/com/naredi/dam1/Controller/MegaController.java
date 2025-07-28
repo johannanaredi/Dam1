@@ -4,6 +4,7 @@ import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
 import com.naredi.dam1.services.MegaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,20 +25,23 @@ public class MegaController {
         this.nailpolishFileRepository = nailpolishFileRepository;
     }
 
-    //funkar att hämta och exportera alla länkar
-    @GetMapping("/export/all")
-    public List<AssetDto> exportAllAndReturnLinks() {
-        return megaService.exportAllFilesAndGetLinks();
-    }
 
     @GetMapping("/files")
     public List<String> getMegaFiles() {
         return megaService.listMegaFiles();
     }
 
-    @GetMapping("/export-missing")
-    public String exportMissing() {
-        megaService.exportMissingLinks();
-        return "Klara!";
+    //funkar att hämta och exportera alla länkar
+    @GetMapping("/export/all")
+    public List<AssetDto> exportAllAndReturnLinks() {
+        return megaService.exportAllFilesAndGetLinks();
     }
+
+    @GetMapping("/export/missing")
+    public ResponseEntity<String> exportMissing() {
+        megaService.exportMissingLinks();
+        return ResponseEntity.ok("De nya länkarna är exporterade");
+    }
+
+
 }

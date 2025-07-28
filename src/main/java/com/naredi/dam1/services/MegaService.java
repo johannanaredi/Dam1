@@ -121,7 +121,8 @@ public class MegaService {
         return exportedFiles;
     }
 
-    public void exportMissingLinks() {
+    public List<AssetDto> exportMissingLinks() {
+        List<AssetDto> result = new ArrayList<>();
         try {
             System.out.println("Kör: mega ls för att kontrollera alla filer...");
             ProcessBuilder lsBuilder = new ProcessBuilder(
@@ -153,10 +154,12 @@ public class MegaService {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(checkProcess.getInputStream()));
 
                 boolean linkExists = false;
+                String megaUrl = null;
                 while ((line = reader.readLine()) != null) {
                     System.out.println("Kontrollerar utdata ");
                     if (line.contains("https://mega.nz/")) {
                         linkExists = true;
+                        megaUrl = line.substring(line.indexOf("https://")).trim();
                         break;
                     }
                 }
@@ -169,16 +172,52 @@ public class MegaService {
                             "export", "-a", "/" + filename
                     );
                     Process exportProcess = exportAdd.start();
+
+                    BufferedReader exportReader = new BufferedReader(new InputStreamReader(exportProcess.getInputStream()));
+                    while ((line = exportReader.readLine()) != null) {
+                        if (line.contains("https://mega.nz/")) {
+                            megaUrl = line.substring(line.indexOf("https://")).trim();
+                            break;
+                        }
+                    }
+
                     exportProcess.waitFor();
                     System.out.println("Länk skapad för: " + filename);
                 } else {
                     System.out.println("Länk finns redan för: " + filename);
+                }
+
+                if (megaUrl != null) {
+                    Optional<AssetEntity> optionalEntity = assetRepository.findByFilename(filename);
+                    AssetDto dto;
+
+                    if (optionalEntity.isPresent()) {
+                        AssetEntity entity = optionalEntity.get();
+
+                        if (!megaUrl.equals(entity.getMegaUrl())) {
+                            entity.setMegaUrl(megaUrl); // <-- Uppdatera länk
+                            assetRepository.save(entity);
+                            System.out.println("URL uppdaterad i databasen för: " + filename);
+                        }
+
+                        dto = DTOMapper.assetToDto(entity);
+                    } else {
+                        AssetEntity newEntity = new AssetEntity();
+                        newEntity.setFilename(filename);
+                        newEntity.setMegaUrl(megaUrl);
+                        assetRepository.save(newEntity);
+                        dto = DTOMapper.assetToDto(newEntity);
+                        System.out.println("Ny fil sparad i databasen: " + filename);
+                    }
+
+                    result.add(dto);
                 }
             }
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-    }
 
+        return result;
+    }
 }
