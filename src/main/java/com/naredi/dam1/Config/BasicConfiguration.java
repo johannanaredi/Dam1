@@ -46,22 +46,16 @@ public class BasicConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Inaktivera CSRF
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()
-                      //  .requestMatchers(HttpMethod.GET,"/mega/assets").hasRole("USER")
-
-                );
-/*
-
-                .httpBasic(withDefaults()) // Aktivera HTTP Basic Authentication med den nya metoden
+                        .requestMatchers(HttpMethod.GET, "/mega/**").hasRole("USER")
+                        .anyRequest().authenticated()
+                )
+                .httpBasic(withDefaults())
                 .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.disable()) // Inaktivera frame options
+                        .frameOptions(frameOptions -> frameOptions.disable())
                 );
-
-*/
-
         return http.build();
     }
 
