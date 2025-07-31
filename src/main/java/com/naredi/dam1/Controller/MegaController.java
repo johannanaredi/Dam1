@@ -30,7 +30,6 @@ public class MegaController {
         return megaService.listMegaFiles();
     }
 
-    //funkar att hämta och exportera alla länkar
     @GetMapping("/export/all")
     public List<AssetDto> exportAllAndReturnLinks() {
         return megaService.exportAllFilesAndGetLinks();

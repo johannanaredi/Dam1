@@ -38,7 +38,7 @@ public class BasicConfiguration {
 
         manager.createUser(User.withUsername("admin")
                 .password(passwordEncoder.encode("admin"))
-                .roles("USER", "ADMIN")
+                .roles("ADMIN")
                 .build());
         return manager;
     }
@@ -49,7 +49,9 @@ public class BasicConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/mega/**").hasRole("USER")
+                        .requestMatchers("/mega/files").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/mega/admin").hasRole("ADMIN")
+                        .requestMatchers("/mega/user").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())

@@ -6,12 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/mega")
-public class LoginController {
-
-    @GetMapping("/user")
-    public String userHello() {
-        return "Hej användare!";
-    }
+public class LoginAdminController {
 
     @GetMapping("/admin")
     public String adminHello() {
