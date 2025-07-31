@@ -1,3 +1,4 @@
+/*
 package com.naredi.dam1.Controller;
 import com.naredi.dam1.DTO.AssetDto;
 import com.naredi.dam1.Repositorys.AssetRepository;
@@ -41,5 +42,5 @@ public class MegaController {
         return ResponseEntity.ok("De nya länkarna är exporterade!");
     }
 
-
 }
+*/

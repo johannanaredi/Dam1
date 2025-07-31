@@ -1,3 +1,4 @@
+/*
 package com.naredi.dam1.Controller;
 
 import com.naredi.dam1.DTO.AssetDto;
@@ -42,3 +43,4 @@ public class MySqlController {
 
 }
 
+*/
