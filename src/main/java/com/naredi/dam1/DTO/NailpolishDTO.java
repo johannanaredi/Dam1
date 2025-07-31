@@ -1,7 +1,5 @@
 package com.naredi.dam1.DTO;
 
-
-
 import java.sql.Timestamp;
 import java.util.List;
 

@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.naredi.dam1.Entitys.AssetEntity;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/mega")
@@ -18,13 +21,30 @@ public class LoginAdminController {
 
     private final MegaService megaService;
     private final NailpolishRepository nailpolishRepository;
-    private final AssetRepository nailpolishFileRepository;
+    private final AssetRepository assetRepository;
 
     @Autowired
-    public LoginAdminController(MegaService megaService, NailpolishRepository nailpolishRepository, AssetRepository nailpolishFileRepository) {
+    public LoginAdminController(MegaService megaService, NailpolishRepository nailpolishRepository, AssetRepository assetRepository) {
         this.megaService = megaService;
         this.nailpolishRepository = nailpolishRepository;
-        this.nailpolishFileRepository = nailpolishFileRepository;
+        this.assetRepository = assetRepository;
+    }
+
+    @GetMapping("/assets")
+    public List<AssetDto> getAllAssets() {
+        List<AssetEntity> entities = assetRepository.findAll();
+
+        return entities.stream()
+                .map(entity -> {
+                    AssetDto dto = new AssetDto();
+                    dto.setId(entity.getId());
+                    dto.setFilename(entity.getFilename());
+                    dto.setMegaUrl(entity.getMegaUrl());
+                    dto.setFileType(entity.getFileType());
+                    dto.setUploadedAt(entity.getUploadedAt());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/admin")

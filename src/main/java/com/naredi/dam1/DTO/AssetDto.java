@@ -9,7 +9,6 @@ public class AssetDto {
     private String fileType;
     private Timestamp uploadedAt;
 
-
     public int getId() {
         return id;
     }

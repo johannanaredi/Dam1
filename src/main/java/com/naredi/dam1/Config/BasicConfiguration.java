@@ -51,9 +51,10 @@ public class BasicConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/mega/files").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/mega/admin").hasRole("ADMIN")
-                        .requestMatchers("/mega/export/all").hasRole("ADMIN")
+                        .requestMatchers("/mega/export/all").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/mega/export/missing").hasRole("ADMIN")
                         .requestMatchers("/mega/user").hasRole("USER")
+                        .requestMatchers("/mega/assets").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults())
