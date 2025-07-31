@@ -5,10 +5,9 @@ import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
 import com.naredi.dam1.services.MegaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.naredi.dam1.Entitys.AssetEntity;
 
@@ -61,5 +60,16 @@ public class LoginAdminController {
     public ResponseEntity<String> exportMissing() {
         megaService.exportMissingLinks();
         return ResponseEntity.ok("De nya länkarna är exporterade!");
+    }
+
+    @DeleteMapping("/assets/{id}")
+    public ResponseEntity<String> deleteAssetById(@PathVariable int id) {
+        boolean success = megaService.deleteFileByAssetId(id);
+        if (success) {
+            return ResponseEntity.ok("Filen och metadatan togs bort (id: " + id + ").");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Kunde inte hitta eller ta bort asset med id: " + id);
+        }
     }
 }

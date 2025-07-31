@@ -7,6 +7,7 @@ import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -120,7 +121,7 @@ public class MegaService {
 
         return exportedFiles;
     }
-
+    @Transactional
     public List<AssetDto> exportMissingLinks() {
         List<AssetDto> result = new ArrayList<>();
         try {
@@ -221,5 +222,47 @@ public class MegaService {
         return result;
 
     }
+    public boolean deleteFileByAssetId(int assetId) {
+        Optional<AssetEntity> optionalAsset = assetRepository.findById(assetId);
+
+        if (optionalAsset.isEmpty()) {
+            System.out.println("Inget asset hittades med id: " + assetId);
+            return false;
+        }
+
+        AssetEntity asset = optionalAsset.get();
+        String filename = asset.getFilename();
+
+        try {
+            // Ta bort från MEGA
+            ProcessBuilder pb = new ProcessBuilder(
+                    "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe",
+                    "rm", "/" + filename
+            );
+            Process process = pb.start();
+
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String errorLine;
+            while ((errorLine = errorReader.readLine()) != null) {
+                System.out.println("Fel från MEGA: " + errorLine);
+            }
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                System.out.println("Misslyckades med att ta bort från MEGA: " + filename);
+                return false;
+            }
+
+            // Ta bort från databasen
+            assetRepository.deleteById(assetId);
+            System.out.println("Tog bort asset med id " + assetId + " och fil " + filename);
+            return true;
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }
