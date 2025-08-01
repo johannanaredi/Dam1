@@ -1,7 +1,5 @@
 package com.naredi.dam1.DTO;
 
-import java.sql.Timestamp;
-
 public class SimpleNailpolishDTO {
 
     private String name;

@@ -50,6 +50,7 @@ public class BasicConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/mega/nailpolish").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/mega/nailpolish/*").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/mega/files").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/mega/admin").hasRole("ADMIN")
                         .requestMatchers("/mega/export/all").hasAnyRole("USER", "ADMIN")
