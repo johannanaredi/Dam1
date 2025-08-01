@@ -37,5 +37,15 @@ public class DTOMapper {
         return dto;
     }
 
+    public static SimpleNailpolishDTO simpleNailpolishToDto(NailpolishEntity entity) {
+        SimpleNailpolishDTO dto = new SimpleNailpolishDTO();
+        dto.setName(entity.getName());
+        dto.setBrand(entity.getBrand());
+        dto.setFinish(entity.getFinish());
+        dto.setColor(entity.getColor());
+        dto.setSizeMl(entity.getSizeMl());
+        dto.setCoverage(entity.getCoverage());
+        return dto;
+    }
 
 }

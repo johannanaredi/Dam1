@@ -1,6 +1,9 @@
 package com.naredi.dam1.services;
 
 import com.naredi.dam1.DTO.AssetDto;
+import com.naredi.dam1.DTO.DTOMapper;
+import com.naredi.dam1.DTO.NailpolishDTO;
+import com.naredi.dam1.DTO.SimpleNailpolishDTO;
 import com.naredi.dam1.Entitys.AssetEntity;
 import com.naredi.dam1.Entitys.NailpolishEntity;
 import com.naredi.dam1.Repositorys.AssetRepository;
@@ -8,9 +11,10 @@ import com.naredi.dam1.Repositorys.NailpolishRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MySqlService {
@@ -24,6 +28,12 @@ public class MySqlService {
     @Autowired
     private MegaService megaService;
 
+    public List<SimpleNailpolishDTO> listSimpleNailpolish() {
+        return nailpolishRepository.findAll()
+                .stream()
+                .map(DTOMapper::simpleNailpolishToDto)
+                .collect(Collectors.toList());
+    }
 
     public String syncAllFilesWithUrlsToDatabase() {
 
@@ -47,7 +57,7 @@ public class MySqlService {
                 AssetEntity asset = new AssetEntity();
                 asset.setFilename(filename);
                 asset.setMegaUrl(url);
-                asset.setNailpolish(nailpolish);
+               // asset.setNailpolish(nailpolish);
                 assetRepository.save(asset);
 
                 System.out.println("Ny post skapad för: " + filename);

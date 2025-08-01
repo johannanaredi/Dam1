@@ -2,6 +2,7 @@ package com.naredi.dam1.services;
 
 import com.naredi.dam1.DTO.AssetDto;
 import com.naredi.dam1.DTO.DTOMapper;
+import com.naredi.dam1.DTO.NailpolishDTO;
 import com.naredi.dam1.Entitys.AssetEntity;
 import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
@@ -15,6 +16,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MegaService {
@@ -24,6 +26,8 @@ public class MegaService {
 
     @Autowired
     private AssetRepository assetRepository;
+
+
 
     public List<String> listMegaFiles() {
         List<String> list = new ArrayList<>();
@@ -226,7 +230,7 @@ public class MegaService {
         Optional<AssetEntity> optionalAsset = assetRepository.findById(assetId);
 
         if (optionalAsset.isEmpty()) {
-            System.out.println("Inget asset hittades med id: " + assetId);
+            System.out.println("Inget nagellack hittades med id: " + assetId);
             return false;
         }
 

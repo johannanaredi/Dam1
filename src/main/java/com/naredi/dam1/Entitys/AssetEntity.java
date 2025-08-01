@@ -24,7 +24,7 @@ public class AssetEntity {
     private Timestamp uploadedAt;
 
     @ManyToOne
-    @JoinColumn(name = "nailpolish_id", nullable = true)
+    @JoinColumn(name = "nailpolish_id")
     private NailpolishEntity nailpolish;
 
     public AssetEntity() {
