@@ -1,8 +1,7 @@
 package com.naredi.dam1.services;
 
 import com.naredi.dam1.DTO.AssetDto;
-import com.naredi.dam1.DTO.DTOMapper;
-import com.naredi.dam1.DTO.NailpolishDTO;
+import com.naredi.dam1.DTO.DtoMapper;
 import com.naredi.dam1.Entitys.AssetEntity;
 import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
@@ -16,7 +15,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MegaService {
@@ -26,8 +24,6 @@ public class MegaService {
 
     @Autowired
     private AssetRepository assetRepository;
-
-
 
     public List<String> listMegaFiles() {
         List<String> list = new ArrayList<>();
@@ -64,7 +60,7 @@ public class MegaService {
         List<AssetDto> exportedFiles = new ArrayList<>();
 
         try {
-            System.out.println("Kör li i mega för att hämta filnamn...");
+            System.out.println("Ls i mega för att hämta filnamn...");
             ProcessBuilder lsBuilder = new ProcessBuilder(
                     "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe", "ls"
             );
@@ -102,7 +98,7 @@ public class MegaService {
 
                         Optional<AssetEntity> optionalEntity = assetRepository.findByFilename(filename);
                         if (optionalEntity.isPresent()) {
-                            AssetDto dto = DTOMapper.assetToDto(optionalEntity.get());
+                            AssetDto dto = DtoMapper.assetToDto(optionalEntity.get());
                             exportedFiles.add(dto);
                         } else {
                             AssetDto dto = new AssetDto();
@@ -125,6 +121,7 @@ public class MegaService {
 
         return exportedFiles;
     }
+
     @Transactional
     public List<AssetDto> exportMissingLinks() {
         List<AssetDto> result = new ArrayList<>();
@@ -161,7 +158,7 @@ public class MegaService {
                 boolean linkExists = false;
                 String megaUrl = null;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println("Kontrollerar utdata ");
+                    System.out.println("Kontrollerar utdatan ");
                     if (line.contains("https://mega.nz/")) {
                         linkExists = true;
                         megaUrl = line.substring(line.indexOf("https://")).trim();
@@ -205,14 +202,15 @@ public class MegaService {
                             System.out.println("URL uppdaterad i databasen för: " + filename);
                         }
 
-                        dto = DTOMapper.assetToDto(entity);
+                        dto = DtoMapper.assetToDto(entity);
                     } else {
                         AssetEntity newEntity = new AssetEntity();
                         newEntity.setFilename(filename);
                         newEntity.setMegaUrl(megaUrl);
                         assetRepository.save(newEntity);
-                        dto = DTOMapper.assetToDto(newEntity);
+                        dto = DtoMapper.assetToDto(newEntity);
                         System.out.println("Ny fil sparad i databasen: " + filename);
+                        //lägga in nytt nailpolish så att det inte får null i id här?
                     }
 
                     result.add(dto);
@@ -238,16 +236,16 @@ public class MegaService {
         String filename = asset.getFilename();
 
         try {
-            // Ta bort från MEGA
+            // Ta bort från MEGA(rm tar bort)
             ProcessBuilder pb = new ProcessBuilder(
                     "C:\\Users\\johan\\AppData\\Local\\MEGAcmd\\MEGAclient.exe",
                     "rm", "/" + filename
             );
             Process process = pb.start();
 
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            BufferedReader errorRead = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String errorLine;
-            while ((errorLine = errorReader.readLine()) != null) {
+            while ((errorLine = errorRead.readLine()) != null) {
                 System.out.println("Fel från MEGA: " + errorLine);
             }
 

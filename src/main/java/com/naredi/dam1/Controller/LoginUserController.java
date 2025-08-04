@@ -1,8 +1,5 @@
 package com.naredi.dam1.Controller;
-import com.naredi.dam1.DTO.DTOMapper;
-import com.naredi.dam1.DTO.NailpolishDTO;
-import com.naredi.dam1.DTO.SimpleNailpolishDTO;
-import com.naredi.dam1.Entitys.NailpolishEntity;
+import com.naredi.dam1.DTO.SimpleNailpolishDto;
 import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
 import com.naredi.dam1.services.MegaService;
@@ -13,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/mega")
@@ -31,11 +27,11 @@ public class LoginUserController {
     }
 
     @PutMapping("/nailpolish/{name}")
-    public ResponseEntity<SimpleNailpolishDTO> updateNailpolishByName(
+    public ResponseEntity<SimpleNailpolishDto> updateNailpolishByName(
             @PathVariable String name,
-            @RequestBody SimpleNailpolishDTO nailpolishDto) {
+            @RequestBody SimpleNailpolishDto nailpolishDto) {
         try {
-            SimpleNailpolishDTO updated = mySqlService.updateNailpolishByName(name, nailpolishDto);
+            SimpleNailpolishDto updated = mySqlService.updateNailpolishByName(name, nailpolishDto);
             return ResponseEntity.ok(updated);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -48,7 +44,7 @@ public class LoginUserController {
     }
 
     @GetMapping("/nailpolish")
-    public List<SimpleNailpolishDTO> listSimpleNailpolish() {
+    public List<SimpleNailpolishDto> listSimpleNailpolish() {
         return mySqlService.listSimpleNailpolish();
     }
 

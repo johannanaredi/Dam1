@@ -6,7 +6,7 @@ import com.naredi.dam1.Entitys.NailpolishEntity;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DTOMapper {
+public class DtoMapper {
 
     public static AssetDto assetToDto(AssetEntity entity){
         AssetDto dto = new AssetDto();
@@ -18,27 +18,26 @@ public class DTOMapper {
         return dto;
     }
 
-    public static NailpolishDTO nailpolishToDto(NailpolishEntity entity){
-        NailpolishDTO dto = new NailpolishDTO();
+    public static NailpolishDto nailpolishToDto(NailpolishEntity entity){
+        NailpolishDto dto = new NailpolishDto();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setBrand(entity.getBrand());
         dto.setFinish(entity.getFinish());
         dto.setColor(entity.getColor());
         dto.setSizeMl(entity.getSizeMl());
-        dto.setSizeMl(entity.getSizeMl());
 
         List<AssetDto> assetDto = entity.getFiles()
                 .stream()
-                .map(DTOMapper :: assetToDto)
+                .map(DtoMapper:: assetToDto)
                 .collect(Collectors.toList());
 
         dto.setFiles(assetDto);
         return dto;
     }
 
-    public static SimpleNailpolishDTO simpleNailpolishToDto(NailpolishEntity entity) {
-        SimpleNailpolishDTO dto = new SimpleNailpolishDTO();
+    public static SimpleNailpolishDto simpleNailpolishToDto(NailpolishEntity entity) {
+        SimpleNailpolishDto dto = new SimpleNailpolishDto();
         dto.setName(entity.getName());
         dto.setBrand(entity.getBrand());
         dto.setFinish(entity.getFinish());

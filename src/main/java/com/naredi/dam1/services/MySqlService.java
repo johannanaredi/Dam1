@@ -1,9 +1,8 @@
 package com.naredi.dam1.services;
 
 import com.naredi.dam1.DTO.AssetDto;
-import com.naredi.dam1.DTO.DTOMapper;
-import com.naredi.dam1.DTO.NailpolishDTO;
-import com.naredi.dam1.DTO.SimpleNailpolishDTO;
+import com.naredi.dam1.DTO.DtoMapper;
+import com.naredi.dam1.DTO.SimpleNailpolishDto;
 import com.naredi.dam1.Entitys.AssetEntity;
 import com.naredi.dam1.Entitys.NailpolishEntity;
 import com.naredi.dam1.Repositorys.AssetRepository;
@@ -12,7 +11,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +28,7 @@ public class MySqlService {
     @Autowired
     private MegaService megaService;
 
-    public SimpleNailpolishDTO updateNailpolishByName(String name, SimpleNailpolishDTO dto) {
+    public SimpleNailpolishDto updateNailpolishByName(String name, SimpleNailpolishDto dto) {
         Optional<NailpolishEntity> optional = nailpolishRepository.findByName(name);
         if (optional.isEmpty()) {
             throw new EntityNotFoundException("Nagellack med namn " + name + " finns inte");
@@ -45,14 +43,13 @@ public class MySqlService {
         existing.setCoverage(dto.getCoverage());
 
         NailpolishEntity saved = nailpolishRepository.save(existing);
-        return DTOMapper.simpleNailpolishToDto(saved);
+        return DtoMapper.simpleNailpolishToDto(saved);
     }
 
-
-    public List<SimpleNailpolishDTO> listSimpleNailpolish() {
+    public List<SimpleNailpolishDto> listSimpleNailpolish() {
         return nailpolishRepository.findAll()
                 .stream()
-                .map(DTOMapper::simpleNailpolishToDto)
+                .map(DtoMapper::simpleNailpolishToDto)
                 .collect(Collectors.toList());
     }
 

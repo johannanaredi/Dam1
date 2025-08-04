@@ -1,6 +1,6 @@
 package com.naredi.dam1.DTO;
 
-public class SimpleNailpolishDTO {
+public class SimpleNailpolishDto {
 
     private String name;
     private String brand;
