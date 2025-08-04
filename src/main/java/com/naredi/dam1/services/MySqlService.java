@@ -56,7 +56,7 @@ public class MySqlService {
     public String syncAllFilesWithUrlsToDatabase() {
 
         System.out.println("Startar synkronisering från MEGA till databasen.");
-        List<AssetDto> allFilesWithUrls = megaService.exportAllFilesAndGetLinks();
+        List<AssetDto> allFilesWithUrls = megaService.exportAllAssetsAndGetLinks();
         int createdCount = 0;
 
         for (AssetDto file : allFilesWithUrls) {

@@ -4,6 +4,7 @@ import com.naredi.dam1.DTO.AssetDto;
 import com.naredi.dam1.Repositorys.AssetRepository;
 import com.naredi.dam1.Repositorys.NailpolishRepository;
 import com.naredi.dam1.services.MegaService;
+import com.naredi.dam1.services.MySqlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,14 @@ public class LoginAdminController {
     private final MegaService megaService;
     private final NailpolishRepository nailpolishRepository;
     private final AssetRepository assetRepository;
+    private final MySqlService mySqlService;
 
     @Autowired
-    public LoginAdminController(MegaService megaService, NailpolishRepository nailpolishRepository, AssetRepository assetRepository) {
+    public LoginAdminController(MegaService megaService, NailpolishRepository nailpolishRepository, AssetRepository assetRepository, MySqlService mySqlService) {
         this.megaService = megaService;
         this.nailpolishRepository = nailpolishRepository;
         this.assetRepository = assetRepository;
+        this.mySqlService = mySqlService;
     }
 
     @GetMapping("/assets")
@@ -53,7 +56,7 @@ public class LoginAdminController {
 
     @GetMapping("/export/all")
     public List<AssetDto> exportAllAndReturnLinks() {
-        return megaService.exportAllFilesAndGetLinks();
+        return megaService.exportAllAssetsAndGetLinks();
     }
 
     @GetMapping("/export/missing")
@@ -64,12 +67,12 @@ public class LoginAdminController {
 
     @DeleteMapping("/assets/{id}")
     public ResponseEntity<String> deleteAssetById(@PathVariable int id) {
-        boolean success = megaService.deleteFileByAssetId(id);
+        boolean success = megaService.deleteAssetById(id);
         if (success) {
-            return ResponseEntity.ok("Filen och metadatan togs bort (id: " + id + ").");
+            return ResponseEntity.ok("Tillgången och metadatan togs bort (id: " + id + ").");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Kunde inte hitta eller ta bort asset med id: " + id);
+                    .body("Kunde inte hitta eller ta bort tillgången med id: " + id);
         }
     }
 }

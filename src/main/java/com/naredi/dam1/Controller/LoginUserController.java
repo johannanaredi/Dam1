@@ -16,14 +16,19 @@ import java.util.List;
 public class LoginUserController {
 
     private final MegaService megaService;
+    private final NailpolishRepository nailpolishRepository;
+    private final AssetRepository assetRepository;
+    private final MySqlService mySqlService;
 
     @Autowired
-    private MySqlService mySqlService;
-
-    @Autowired
-    public LoginUserController(MegaService megaService, NailpolishRepository nailpolishRepository, AssetRepository nailpolishFileRepository) {
+    public LoginUserController(MegaService megaService,
+                               NailpolishRepository nailpolishRepository,
+                               AssetRepository assetRepository,
+                               MySqlService mySqlService) {
         this.megaService = megaService;
-
+        this.nailpolishRepository = nailpolishRepository;
+        this.assetRepository = assetRepository;
+        this.mySqlService = mySqlService;
     }
 
     @PutMapping("/nailpolish/{name}")
@@ -34,7 +39,7 @@ public class LoginUserController {
             SimpleNailpolishDto updated = mySqlService.updateNailpolishByName(name, nailpolishDto);
             return ResponseEntity.ok(updated);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build(); //404
         }
     }
 
@@ -49,8 +54,8 @@ public class LoginUserController {
     }
 
     @GetMapping("/files")
-    public List<String> getMegaFiles() {
-        return megaService.listMegaFiles();
+    public List<String> getMegaAssets() {
+        return megaService.listMegaAssets();
     }
 
 }

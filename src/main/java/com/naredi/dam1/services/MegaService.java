@@ -25,7 +25,7 @@ public class MegaService {
     @Autowired
     private AssetRepository assetRepository;
 
-    public List<String> listMegaFiles() {
+    public List<String> listMegaAssets() {
         List<String> list = new ArrayList<>();
         try {
             System.out.println("Kör: ls i mega cmd");
@@ -56,7 +56,7 @@ public class MegaService {
         return list;
     }
 
-    public List<AssetDto> exportAllFilesAndGetLinks() {
+    public List<AssetDto> exportAllAssetsAndGetLinks() {
         List<AssetDto> exportedFiles = new ArrayList<>();
 
         try {
@@ -222,9 +222,9 @@ public class MegaService {
         }
 
         return result;
-
     }
-    public boolean deleteFileByAssetId(int assetId) {
+
+    public boolean deleteAssetById(int assetId) {
         Optional<AssetEntity> optionalAsset = assetRepository.findById(assetId);
 
         if (optionalAsset.isEmpty()) {

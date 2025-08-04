@@ -3,7 +3,7 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "nailpolish_files")
+@Table(name = "nailpolish_assets")
 public class AssetEntity {
 
     @Id
